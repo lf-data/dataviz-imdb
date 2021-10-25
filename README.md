@@ -1,4 +1,4 @@
-# Dataviz-IMDB
+# Dataviz IMDB
 
 Through vega lite my colleges and me, using the IMDB dataset, we createed a interactive visualization to show:
 
