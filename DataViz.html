@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Embedding Vega-Lite</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
+    <style>
+    	#vis{margin: auto}
+    </style>
+  </head>
+  <body>
+    <div id="vis"></div>
+
+    <script type="text/javascript">
+      var yourVlSpec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/giuliacrespi/g/main/GenreCountryFilm.csv"
+  },
+  "description": "Trend of the average IMDb score and its inter-quartile range for movies from 1960 to 2020, grouped for the country of production. For each geographical area, the year with the highest average IMDb score has been identified through a red point. For each year, it's shown the best rated movie for the selected geographical area",
+  "config": {
+    "axis": {
+      "titleFontSize": 20,
+      "titleFont": "Helvetica",
+      "titleColor": "#f5cb5c",
+      "grid": true,
+      "gridColor": "#97969231"
+    }
+  },
+  "params": [
+    {
+      "name": "Where",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All",
+          "Canada",
+          "France",
+          "Germany",
+          "Hong Kong",
+          "India",
+          "Italy",
+          "Japan",
+          "Turkey",
+          "UK",
+          "USA"
+        ]
+      }
+    }
+  ],
+  "transform": [
+    {"filter": "Where == 'All' || datum.country == Where"},
+    {"filter": {"timeUnit": "year", "field": "year", "gte": 1960}}
+  ],
+  "vconcat": [
+    {
+      "title": {
+        "text": ["When Were the Best Movies Made?"],
+        "fontSize": 36,
+        "font": "Helvetica",
+        "fontStyle": "Bold",
+        "color": "#1a1818",
+        "baseline": "line-bottom",
+        "subtitle": "According to IMDb",
+        "subtitleFontSize": 30,
+        "subtitleFont": "Helvetica",
+        "subtitleFontWeight": "bold",
+        "subtitlePadding": 4,
+        "subtitleColor": "#f5cb5c"
+      },
+      "height": 450,
+      "width": 600,
+      "encoding": {
+        "x": {
+          "timeUnit": "year",
+          "field": "year",
+          "type": "temporal",
+          "title": null,
+          "scale": {"domain": {"param": "brush"}}
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "opacity": 0.8,
+            "interpolate": "natural",
+            "color": "#f0cf3ddc"
+          },
+          "encoding": {
+            "y": {
+              "aggregate": "q3",
+              "field": "avg_vote",
+              "type": "quantitative",
+              "scale": {"zero": false}
+            },
+            "y2": {"aggregate": "q1", "field": "avg_vote"}
+          }
+        },
+        {
+          "mark": {
+            "type": "line",
+            "interpolate": "natural",
+            "color": "#000000f8",
+            "size": 4
+          },
+          "encoding": {
+            "y": {
+              "aggregate": "average",
+              "field": "avg_vote",
+              "type": "quantitative",
+              "scale": {"zero": false},
+              "title": "Average IMDb score"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {"op": "max", "field": "avg_vote", "as": "max_vote"},
+                {"op": "average", "field": "avg_vote", "as": "mean_vote"},
+                {"op": "average", "field": "votes", "as": "mean_votes"},
+                {"op": "min", "field": "avg_vote", "as": "min_vote"},
+                {"op": "count", "field": "data", "as": "n_movies"},
+                {"op": "argmax", "field": "avg_vote", "as": "argmax_vote"}
+              ],
+              "groupby": ["year"]
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "point",
+                "color": "#000000f8",
+                "fill": "#000000f8",
+                "size": 20,
+                "clip": false
+              }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "color": "#000000f8",
+                "fontSize": 12,
+                "dy": -15,
+                "clip": false,
+                "limit": 150,
+                "fontStyle": "italic"
+              },
+              "encoding": {"text": {"field": "argmax_vote.title"}},
+              "params": [
+                {
+                  "name": "hover",
+                  "select": {
+                    "type": "point",
+                    "fields": ["year"],
+                    "nearest": true,
+                    "on": "mouseover",
+                    "clear": "mouseout",
+                    "encodings": ["x"]
+                  }
+                }
+              ]
+            }
+          ],
+          "encoding": {
+            "opacity": {
+              "condition": {"value": 1, "param": "hover", "empty": false},
+              "value": 0
+            },
+            "y": {
+              "field": "max_vote",
+              "type": "quantitative",
+              "scale": {"zero": false}
+            },
+            "tooltip": [
+              {"timeUnit": "year", "field": "year", "title": "Year"},
+              {"field": "argmax_vote.title", "title": "Best Movie"},
+              {
+                "field": "mean_vote",
+                "type": "quantitative",
+                "format": ".2f",
+                "title": "Avg IMDb score"
+              },
+              {
+                "field": "max_vote",
+                "type": "quantitative",
+                "format": ".2f",
+                "title": "Max IMDb score"
+              },
+              {
+                "field": "min_vote",
+                "type": "quantitative",
+                "format": ".2f",
+                "title": "Min IMDb score"
+              },
+              {
+                "field": "mean_votes",
+                "type": "quantitative",
+                "format": ".2s",
+                "title": "Avg Votes"
+              },
+              {
+                "field": "n_movies",
+                "type": "quantitative",
+                "format": ".2s",
+                "title": "# of movies"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {"op": "average", "field": "avg_vote", "as": "mean_vote"}
+              ],
+              "groupby": ["year"]
+            },
+            {
+              "window": [{"op": "rank", "as": "rank"}],
+              "sort": [{"field": "mean_vote", "order": "descending"}]
+            },
+            {"filter": "datum.rank == 1"}
+          ],
+          "encoding": {
+            "y": {
+              "aggregate": "max",
+              "field": "mean_vote",
+              "type": "quantitative"
+            }
+          },
+          "mark": {
+            "type": "circle",
+            "stroke": "#ff4040",
+            "fill": "#ff4040",
+            "size": 120
+          }
+        }
+      ]
+    },
+    {
+      "width": 600,
+      "height": 80,
+      "layer": [
+        {
+          "params": [
+            {
+              "name": "brush",
+              "select": {"type": "interval", "encodings": ["x"]}
+            }
+          ],
+          "mark": {
+            "type": "area",
+            "color": "#f0cf3db4",
+            "stroke": "black",
+            "tooltip": true
+          },
+          "encoding": {
+            "x": {"timeUnit": "year", "field": "year", "title": null},
+            "y": {
+              "aggregate": "count",
+              "field": "data",
+              "title": "# of movies"
+            },
+            "tooltip": [
+              {"timeUnit": "year", "field": "year", "title": "Year"},
+              {"aggregate": "count", "title": "# of movies"}
+            ]
+          }
+        }
+      ]
+    }
+  ]
+};
+      vegaEmbed('#vis', yourVlSpec,  {renderer: "svg"});
+    </script>
+  </body>
+</html>
