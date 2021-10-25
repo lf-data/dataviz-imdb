@@ -15,3 +15,9 @@ Through vega lite my colleges and me, using the IMDB dataset, we createed a inte
 ![image](image4.png)
 
 source data: https://www.imdb.com/
+
+```json
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
