@@ -6,7 +6,7 @@ My colleges and me created an interactive visualization for an university projec
 - For each geographical area, the year with the highest average IMDb score has been identified through a red point. 
 - For each year, it's shown the best rated movie for the selected geographical area
 
-All was done with Vega-lite and using the IMDB dataset.
+Everything was done with Vega-lite and using the IMDB dataset.
 
 ![image](image1.png)
 
