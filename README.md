@@ -14,13 +14,13 @@ Through vega lite my colleges and me, using the IMDB dataset, we createed a inte
 
 ![image](image4.png)
 
-source data: https://www.imdb.com/
+The followin is the used code in vega-lite:
 
 ```json
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "data": {
-    "url": "https://raw.githubusercontent.com/giuliacrespi/g/main/GenreCountryFilm.csv"
+    "url": "GenreCountryFilm.csv"
   },
   "description": "Trend of the average IMDb score and its inter-quartile range for movies from 1960 to 2020, grouped for the country of production. For each geographical area, the year with the highest average IMDb score has been identified through a red point. For each year, it's shown the best rated movie for the selected geographical area",
   "config": {
@@ -281,3 +281,5 @@ source data: https://www.imdb.com/
   ]
 }
 ```
+
+source data: https://www.imdb.com/
