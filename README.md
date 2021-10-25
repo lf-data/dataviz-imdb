@@ -1,10 +1,12 @@
 # Dataviz IMDB
 
-Through vega lite my colleges and me, using the IMDB dataset, we createed a interactive visualization to show:
+My colleges and me created a interactive visualization for an university project to show:
 
 - Trend of the average IMDb score and its inter-quartile range for movies from 1960 to 2020, grouped for the country of production. 
 - For each geographical area, the year with the highest average IMDb score has been identified through a red point. 
 - For each year, it's shown the best rated movie for the selected geographical area
+
+All was done with Vega-lite and using the IMDB dataset.
 
 ![image](image1.png)
 
