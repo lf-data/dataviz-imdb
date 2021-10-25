@@ -16,7 +16,7 @@ All was done with Vega-lite and using the IMDB dataset.
 
 ![image](image4.png)
 
-The followin is the used code in vega-lite:
+The used code in vega-lite:
 
 ```json
 {
